@@ -1,0 +1,42 @@
+<h2 style="margin: 20px; text-align: center;">Productos en el carrito</h2>
+
+<ng-container *ngIf="!boletaVisible; else boletaTemplate">
+  <div style="max-width: 500px; margin: auto; text-align: center;">
+    <ul *ngIf="carrito.length > 0; else vacio" style="list-style: none; padding: 0;">
+      <li *ngFor="let producto of carrito">
+        {{ producto.nombre }} - ${{ producto.precio | number }}
+      </li>
+    </ul>
+
+    <ng-template #vacio>
+      <p>No hay productos en el carrito.</p>
+    </ng-template>
+
+    <p *ngIf="carrito.length > 0"><strong>Total:</strong> ${{ calcularTotal() | number }}</p>
+
+    <div style="display: flex; justify-content: center; gap: 10px;">
+      <button mat-raised-button color="primary" (click)="confirmarCompra()">Confirmar compra</button>
+      <button mat-stroked-button color="warn" (click)="cancelarCompra()">Cancelar compra</button>
+    </div>
+  </div>
+</ng-container>
+
+<!-- BOLETA DE COMPRA -->
+<ng-template #boletaTemplate>
+  <mat-card style="max-width: 500px; margin: auto; padding: 20px;">
+    <h3>Boleta de compra</h3>
+    <p><strong>Número:</strong> #{{ boleta.numero }}</p>
+    <p><strong>Cliente:</strong> {{ boleta.usuario }}</p>
+    <p><strong>Fecha:</strong> {{ boleta.fecha | date:'medium' }}</p>
+
+    <ul>
+      <li *ngFor="let p of boleta.productos">
+        {{ p.nombre }} - ${{ p.precio | number }}
+      </li>
+    </ul>
+
+    <p><strong>Total:</strong> ${{ boleta.total | number }}</p>
+
+    <button mat-raised-button color="primary" (click)="cerrarBoleta()">Aceptar</button>
+  </mat-card>
+</ng-template>

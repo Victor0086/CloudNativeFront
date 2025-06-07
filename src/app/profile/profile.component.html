@@ -1,0 +1,25 @@
+<div>
+  <p><strong>First Name:</strong> {{ profile.name }}</p>
+  <p><strong>Email:</strong> {{ profile.preferred_username }}</p>
+</div>
+
+<h3>Historial de compras</h3>
+<div *ngIf="compras.length === 0">
+  <p>No hay compras registradas.</p>
+</div>
+
+<div *ngFor="let compra of compras" style="margin-bottom: 1rem; border-bottom: 1px solid #ccc; padding-bottom: 1rem;">
+  <p><strong>Fecha:</strong> {{ compra.fecha | date: 'short' }}</p>
+  <p><strong>Total:</strong> ${{ compra.total }}</p>
+  <p><strong>Productos:</strong></p>
+  <ul>
+    <li *ngFor="let producto of compra.productos">
+      {{ producto.nombre }} - ${{ producto.precio }}
+    </li>
+  </ul>
+</div>
+
+<hr />
+
+<h4><button (click)="llamarBackend()">Llamar backend</button></h4>
+<h4>Response backend: {{ mostrarResponseBackend() | json }}</h4>

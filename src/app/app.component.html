@@ -1,0 +1,43 @@
+<mat-toolbar color="primary">
+  <a class="title" routerLink="/">Tienda Angular 18</a>
+
+  <span class="toolbar-spacer"></span>
+
+  <a mat-button routerLink="/">Inicio</a>
+
+
+  <button mat-icon-button
+          routerLink="/carrito"
+          [matBadge]="carritoCantidad$ | async"
+          matBadgeColor="accent"
+          aria-label="Carrito">
+    <mat-icon>shopping_cart</mat-icon>
+  </button>
+
+  <ng-container *ngIf="loginDisplay">
+    <a mat-button routerLink="/profile">Perfil</a>
+  </ng-container>
+
+  <span class="toolbar-spacer"></span>
+
+  <!-- BOTÓN DE LOGIN -->
+  <ng-container *ngIf="!loginDisplay">
+    <button mat-raised-button [matMenuTriggerFor]="loginMenu">Login</button>
+    <mat-menu #loginMenu="matMenu">
+      <button mat-menu-item (click)="loginPopup()">Login usando Popup</button>
+    </mat-menu>
+  </ng-container>
+
+  <!-- BOTÓN DE LOGOUT -->
+  <ng-container *ngIf="loginDisplay">
+    <button mat-raised-button [matMenuTriggerFor]="logoutMenu">Logout</button>
+    <mat-menu #logoutMenu="matMenu">
+      <button mat-menu-item (click)="logout(true)">Logout usando Popup</button>
+    </mat-menu>
+  </ng-container>
+</mat-toolbar>
+
+<!-- CONTENIDO -->
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
