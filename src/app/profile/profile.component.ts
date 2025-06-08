@@ -1,30 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DefaultBackendService } from '../service/default-backend.service';
-import { CarritoService, Compra } from '../service/carrito.service';
 import { MsalService } from '@azure/msal-angular';
+import { Compra, CompraService } from '../service/compra.service';
+
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.css'],
   standalone: true,
   imports: [CommonModule],
 })
 export class ProfileComponent implements OnInit {
   profile: { name?: string; preferred_username?: string } = {};
   compras: Compra[] = [];
-  expanded: boolean[] = [];
   responseBackend!: object;
 
   constructor(
-    private backendService: DefaultBackendService,
-    private carritoService: CarritoService,
-    private authService: MsalService
+    private readonly authService: MsalService,
+    private readonly compraService: CompraService,
+    private readonly cd: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.getProfile();
-    this.cargarHistorialCompras();
   }
 
   getProfile() {
@@ -36,6 +35,7 @@ export class ProfileComponent implements OnInit {
           name: decoded.name,
           preferred_username: decoded.preferred_username,
         };
+        this.cargarHistorialCompras();
       } catch (error) {
         console.error('Error al decodificar el token:', error);
       }
@@ -54,26 +54,33 @@ export class ProfileComponent implements OnInit {
       );
       return JSON.parse(jsonPayload);
     } catch (error) {
+      console.error('Error decoding token:', error);
       return null;
     }
   }
 
   cargarHistorialCompras(): void {
-    this.compras = this.carritoService.obtenerHistorial();
-    this.expanded = this.compras.map(() => false);
+    this.isCargando = true;
+
+    const email = this.profile.preferred_username;
+    const token = localStorage.getItem('jwt');
+
+    if (email && token) {
+      this.compraService.getComprasPorUsuario(email).subscribe({
+        next: (ventas: Compra[]) => {
+        this.compras = ventas;
+        this.isCargando = false;
+        this.cd.detectChanges();
+        console.log('Compras cargadas:', this.compras);
+        },
+        error: (err) => {
+          this.isCargando = false;
+          console.error('Error al obtener compras:', err);
+        },
+      });
+    }
   }
 
-  toggleDetalle(index: number): void {
-    this.expanded[index] = !this.expanded[index];
-  }
+  isCargando = true;
 
-  llamarBackend(): void {
-    this.backendService.consumirBackend().subscribe((response) => {
-      this.responseBackend = response;
-    });
-  }
-
-  mostrarResponseBackend(): string {
-    return JSON.stringify(this.responseBackend);
-  }
 }

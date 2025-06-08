@@ -1,34 +1,32 @@
 import { Injectable } from '@angular/core';
-
-export interface Producto {
-  id: number;
-  nombre: string;
-  precio: number;
-}
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface Compra {
+  id: number;
+  cliente: string;
   fecha: string;
-  productos: Producto[];
   total: number;
-  usuario: string; // email
+  productos: {
+    id: number;
+    nombreProducto: string;
+    precioUnitario: number;
+  }[];
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class CompraService {
-  constructor() {}
+  private readonly apiUrl = 'https://gftgeiygv0.execute-api.us-east-1.amazonaws.com/DEV/ventas';
 
-  guardarCompra(compra: Compra): void {
-    const compras = this.obtenerComprasDelUsuario(compra.usuario);
-    compras.push(compra);
-    localStorage.setItem(`compras_${compra.usuario}`, JSON.stringify(compras));
+  constructor(private readonly http: HttpClient) {}
+
+  getComprasPorUsuario(email: string): Observable<Compra[]> {
+    const token = localStorage.getItem('jwt') ?? '';
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.get<Compra[]>(`${this.apiUrl}/cliente/${email}`, { headers });
   }
-
-  obtenerComprasDelUsuario(correo: string): Compra[] {
-    const comprasGuardadas = localStorage.getItem(`compras_${correo}`);
-    return comprasGuardadas ? JSON.parse(comprasGuardadas) : [];
-  }
-
-
 }

@@ -24,8 +24,8 @@ export class ProductosComponent implements OnInit {
   };
 
   constructor(
-    private carritoService: CarritoService,
-    private authService: MsalService
+    private readonly carritoService: CarritoService,
+    private readonly authService: MsalService
   ) {}
 
   ngOnInit(): void {

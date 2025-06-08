@@ -16,6 +16,7 @@ import { CarritoService, Producto } from '../service/carrito.service';
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, MatCardModule, RouterModule],
+  styleUrls: ['./home.component.css'],
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit {
@@ -27,9 +28,9 @@ export class HomeComponent implements OnInit {
     { id: 3, nombre: 'Teclado RGB', precio: 28000, imagen: 'https://via.placeholder.com/300x200?text=Teclado+RGB' }
   ];
   constructor(
-    private authService: MsalService,
-    private msalBroadcastService: MsalBroadcastService,
-    private carritoService: CarritoService
+    private readonly authService: MsalService,
+    private readonly msalBroadcastService: MsalBroadcastService,
+    private readonly carritoService: CarritoService
   ) {}
 
   ngOnInit(): void {
@@ -72,5 +73,8 @@ export class HomeComponent implements OnInit {
     this.carritoService.limpiarCarrito();
     alert('Carrito limpiado.');
   }
+
+
+
   
 }

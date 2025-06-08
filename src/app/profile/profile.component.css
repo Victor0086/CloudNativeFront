@@ -1,0 +1,64 @@
+/* Título principal */
+h2 {
+  font-weight: bold;
+  color: #4b0082;
+  margin-bottom: 1rem;
+}
+
+/* Mensajes */
+.loading, .empty {
+  font-style: italic;
+  color: #666;
+  padding: 1rem;
+  font-size: 1.1rem;
+}
+
+/* Tarjeta */
+.card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.card-header {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+}
+
+/* Body */
+.card-body p {
+  margin: 0.25rem 0;
+  color: #444;
+}
+
+/* Productos */
+.list-group {
+  margin-top: 1rem;
+  padding-left: 1rem;
+}
+
+.list-group-item {
+  font-size: 0.95rem;
+  padding: 0.4rem 0;
+  border: none;
+  background-color: transparent;
+  color: #222;
+}
+
+.list-group-item:not(:last-child) {
+  border-bottom: 1px solid #eee;
+}

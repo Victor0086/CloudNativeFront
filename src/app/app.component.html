@@ -5,7 +5,6 @@
 
   <a mat-button routerLink="/">Inicio</a>
 
-
   <button mat-icon-button
           routerLink="/carrito"
           [matBadge]="carritoCantidad$ | async"
@@ -14,30 +13,34 @@
     <mat-icon>shopping_cart</mat-icon>
   </button>
 
-  <ng-container *ngIf="loginDisplay">
+  <!-- Si está logueado -->
+  <ng-container *ngIf="loginDisplay; else noLogin">
+    <span style="margin-right: 10px; font-weight: 500;">{{ userEmail }}</span>
     <a mat-button routerLink="/profile">Perfil</a>
+    <button mat-raised-button color="warn" (click)="logout()">Logout</button>
   </ng-container>
 
-  <span class="toolbar-spacer"></span>
-
-  <!-- BOTÓN DE LOGIN -->
-  <ng-container *ngIf="!loginDisplay">
-    <button mat-raised-button [matMenuTriggerFor]="loginMenu">Login</button>
-    <mat-menu #loginMenu="matMenu">
-      <button mat-menu-item (click)="loginPopup()">Login usando Popup</button>
-    </mat-menu>
-  </ng-container>
-
-  <!-- BOTÓN DE LOGOUT -->
-  <ng-container *ngIf="loginDisplay">
-    <button mat-raised-button [matMenuTriggerFor]="logoutMenu">Logout</button>
-    <mat-menu #logoutMenu="matMenu">
-      <button mat-menu-item (click)="logout(true)">Logout usando Popup</button>
-    </mat-menu>
-  </ng-container>
+  <!-- Si NO está logueado -->
+  <ng-template #noLogin>
+    <div style="display: flex; flex-direction: column; align-items: flex-end;">
+      <button mat-raised-button color="accent" (click)="identificarse()">Identificarse</button>
+      <button mat-button color="primary" (click)="registrarse()">¿No tienes cuenta? Regístrate</button>
+    </div>
+  </ng-template>
 </mat-toolbar>
 
-<!-- CONTENIDO -->
+<!-- CONTENIDO PRINCIPAL -->
 <div class="container">
   <router-outlet></router-outlet>
 </div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <p class="text-muted">© 2025 Tienda Electronica. Todos los derechos reservados.</p>
+    <p class="text-muted">
+      <a href="" target="_blank" rel="noopener noreferrer">Política de privacidad</a> |
+      <a href="" target="_blank" rel="noopener noreferrer">Términos de servicio</a>
+    </p>
+  </div>
+</footer>

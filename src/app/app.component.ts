@@ -1,12 +1,12 @@
 import {
   Component,
   OnInit,
-  Inject,
   OnDestroy,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -20,7 +20,7 @@ import {
   MsalModule,
   MsalBroadcastService,
   MSAL_GUARD_CONFIG,
-  MsalGuardConfiguration
+  MsalGuardConfiguration,
 } from '@azure/msal-angular';
 
 import {
@@ -28,7 +28,7 @@ import {
   InteractionStatus,
   PopupRequest,
   EventMessage,
-  EventType
+  EventType,
 } from '@azure/msal-browser';
 
 import { Subject } from 'rxjs';
@@ -49,40 +49,62 @@ import { filter, takeUntil } from 'rxjs/operators';
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
-    MatBadgeModule
+    MatBadgeModule,
   ],
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'Tienda Angular 18';
   isIframe = false;
   loginDisplay = false;
-
+  userEmail = '';
 
   carritoCantidad$: typeof this.carritoService.cantidad$;
 
   private readonly _destroying$ = new Subject<void>();
 
+  private readonly msalGuardConfig = inject<MsalGuardConfiguration>(MSAL_GUARD_CONFIG);
+
   constructor(
-    @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
-    private authService: MsalService,
-    private msalBroadcastService: MsalBroadcastService,
-    private carritoService: CarritoService
+    private readonly authService: MsalService,
+    private readonly msalBroadcastService: MsalBroadcastService,
+    private readonly carritoService: CarritoService,
+    private readonly router: Router
   ) {
     this.carritoCantidad$ = this.carritoService.cantidad$;
   }
 
   ngOnInit(): void {
-    this.authService.handleRedirectObservable().subscribe();
+    this.authService.instance
+      .initialize()
+      .then(() => {
+        console.log('MSAL inicializado correctamente');
+        this.procesarEventos();
+      })
+      .catch((err) => console.error('Error inicializando MSAL', err));
+  }
+
+  private procesarEventos(): void {
     this.isIframe = window !== window.parent && !window.opener;
+
+    this.authService.handleRedirectObservable().subscribe({
+      next: (result) => {
+        if (result && result.account) {
+          this.authService.instance.setActiveAccount(result.account);
+          this.setLoginDisplay();
+        }
+      },
+      error: (error) => console.error('Error en redirección', error),
+    });
 
     this.setLoginDisplay();
     this.authService.instance.enableAccountStorageEvents();
 
     this.msalBroadcastService.msalSubject$
       .pipe(
-        filter((msg: EventMessage) =>
-          msg.eventType === EventType.ACCOUNT_ADDED ||
-          msg.eventType === EventType.ACCOUNT_REMOVED
+        filter(
+          (msg: EventMessage) =>
+            msg.eventType === EventType.ACCOUNT_ADDED ||
+            msg.eventType === EventType.ACCOUNT_REMOVED
         )
       )
       .subscribe(() => {
@@ -105,8 +127,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   setLoginDisplay() {
-    const accounts = this.authService.instance.getAllAccounts();
-    this.loginDisplay = accounts && accounts.length > 0;
+    const account = this.authService.instance.getActiveAccount();
+    this.loginDisplay = !!account;
+    this.userEmail = account?.username ?? '';
   }
 
   checkAndSetActiveAccount() {
@@ -130,19 +153,31 @@ export class AppComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error obteniendo token:', error);
-        }
+        },
       });
     });
   }
 
-  logout(popup?: boolean) {
+  logout() {
     this.authService.logoutPopup({ mainWindowRedirectUri: '/' }).subscribe({
       next: () => {
         this.authService.instance.setActiveAccount(null);
         this.setLoginDisplay();
         localStorage.removeItem('jwt');
       },
-      error: (err) => console.error('Error en logout', err)
+      error: (err) => console.error('Error en logout', err),
+    });
+  }
+
+  identificarse(): void {
+    this.router.navigate(['/auth']);
+  }
+
+  registrarse(): void {
+    this.authService.loginRedirect({
+      authority:
+        'https://grupo10duoc.b2clogin.com/grupo10Duoc.onmicrosoft.com/B2C_1_grupo10Duoc',
+      scopes: ['openid', 'profile', 'offline_access'],
     });
   }
 

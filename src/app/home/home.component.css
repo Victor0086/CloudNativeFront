@@ -1,0 +1,56 @@
+/* Título principal */
+h1 {
+  color: #4b0082; /* púrpura elegante */
+}
+
+/* Carrusel */
+#carouselPromo img {
+  max-height: 300px;
+  object-fit: cover;
+}
+
+/* Tarjeta de producto */
+.producto-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.producto-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Imagen del producto */
+.producto-card img {
+  max-height: 200px;
+  object-fit: contain;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #eee;
+}
+
+/* Nombre del producto */
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 0.5rem;
+}
+
+/* Precio */
+.card-text {
+  font-size: 1.1rem;
+  color: #198754; /* verde Bootstrap */
+}
+
+/* Botón */
+button.btn {
+  font-weight: 600;
+}
+
+/* Badge "Nuevo" y Descuento */
+.badge {
+  font-size: 0.75rem;
+  padding: 0.4em 0.6em;
+  border-radius: 0.5rem;
+}

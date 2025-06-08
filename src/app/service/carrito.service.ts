@@ -1,3 +1,4 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
@@ -19,11 +20,13 @@ export interface Compra {
   providedIn: 'root',
 })
 export class CarritoService {
-  private carrito: Producto[] = [];
-  private historial: Compra[] = [];
+  private readonly carrito: Producto[] = [];
+  private readonly historial: Compra[] = [];
 
-  private cantidadSubject = new BehaviorSubject<number>(0);
+  private readonly cantidadSubject = new BehaviorSubject<number>(0);
   cantidad$ = this.cantidadSubject.asObservable();
+
+  constructor(private readonly http: HttpClient) {}
 
   agregarProducto(producto: Producto): void {
     this.carrito.push(producto);
@@ -41,30 +44,50 @@ export class CarritoService {
   }
 
   limpiarCarrito(): void {
-    this.carrito = [];
+    this.carrito.length = 0;
     console.log('Carrito limpiado.');
-    this.cantidadSubject.next(0); // fuerza actualización
+    this.cantidadSubject.next(0);
   }
 
   confirmarCompra(usuario: string): void {
+    const jwt = localStorage.getItem('jwt') ?? '';
+
     const nuevaCompra: Compra = {
       productos: [...this.carrito],
       total: this.calcularTotal(),
-      fecha: new Date(),
-      usuario: usuario
+      fecha: new Date(), 
+      usuario
     };
-    console.log('Compra confirmada:', nuevaCompra);
 
-    this.historial.push(nuevaCompra);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${jwt}`
+    });
+
+    const payload = {
+      cliente: nuevaCompra.usuario,
+      fecha: nuevaCompra.fecha.toISOString(),
+      total: nuevaCompra.total,
+      productos: nuevaCompra.productos.map(p => ({
+        nombreProducto: p.nombre,
+        precioUnitario: p.precio
+      }))
+    };
+
+    this.http.post('https://gftgeiygv0.execute-api.us-east-1.amazonaws.com/DEV/ventas', payload, { headers })
+      .subscribe({
+        next: (res) => console.log('Venta guardada en backend:', res),
+        error: (err) => console.error('Error al guardar venta en backend:', err)
+      });
+
     this.limpiarCarrito();
   }
 
-  obtenerHistorial(): Compra[] {
-    return this.historial;
-  }
-
-  cancelarCompra(): void {
+    cancelarCompra(): void {
     console.log('Compra cancelada.');
     this.limpiarCarrito();
   }
+
+
+
 }

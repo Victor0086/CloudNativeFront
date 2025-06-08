@@ -1,25 +1,30 @@
-<div>
-  <p><strong>First Name:</strong> {{ profile.name }}</p>
-  <p><strong>Email:</strong> {{ profile.preferred_username }}</p>
+<h2>Historial de compras</h2>
+
+<!-- Muestra mientras se cargan -->
+<div *ngIf="isCargando" class="loading">
+  <p>Cargando historial...</p>
 </div>
 
-<h3>Historial de compras</h3>
-<div *ngIf="compras.length === 0">
+<!-- Muestra si ya cargó y está vacío -->
+<div *ngIf="!isCargando && compras.length === 0" class="empty">
   <p>No hay compras registradas.</p>
 </div>
 
-<div *ngFor="let compra of compras" style="margin-bottom: 1rem; border-bottom: 1px solid #ccc; padding-bottom: 1rem;">
-  <p><strong>Fecha:</strong> {{ compra.fecha | date: 'short' }}</p>
-  <p><strong>Total:</strong> ${{ compra.total }}</p>
-  <p><strong>Productos:</strong></p>
-  <ul>
-    <li *ngFor="let producto of compra.productos">
-      {{ producto.nombre }} - ${{ producto.precio }}
-    </li>
-  </ul>
+<!-- Muestra si ya cargó y hay datos -->
+<div *ngIf="!isCargando && compras.length > 0">
+  <div *ngFor="let compra of compras" class="card p-3 mb-3 shadow-sm border rounded">
+    <div class="card-header">
+      Boleta #{{ compra.id }}
+    </div>
+    <div class="card-body">
+      <p><strong>Fecha:</strong> {{ compra.fecha | date: 'medium' }}</p>
+      <p><strong>Total:</strong> {{ compra.total | currency: 'CLP' }}</p>
+
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let producto of compra.productos">
+          {{ producto.nombreProducto }} - {{ producto.precioUnitario | currency: 'CLP' }}
+        </li>
+      </ul>
+    </div>
+  </div>
 </div>
-
-<hr />
-
-<h4><button (click)="llamarBackend()">Llamar backend</button></h4>
-<h4>Response backend: {{ mostrarResponseBackend() | json }}</h4>

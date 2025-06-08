@@ -1,0 +1,21 @@
+<div class="auth-container">
+  <h2>Bienvenido</h2>
+  <p>Inicia sesión o regístrate para continuar</p>
+
+  <form (ngSubmit)="identificarse()">
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Correo electrónico</mat-label>
+      <input matInput [(ngModel)]="email" name="email" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Contraseña</mat-label>
+      <input matInput [(ngModel)]="password" name="password" type="password" required />
+    </mat-form-field>
+
+    <div class="buttons">
+      <button mat-raised-button color="primary" type="submit">Identificarse</button>
+      <button mat-button color="accent" type="button" (click)="registrarse()">Registrarse</button>
+    </div>
+  </form>
+</div>
