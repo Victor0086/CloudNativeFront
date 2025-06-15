@@ -2,11 +2,18 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+// ✅ Interfaz extendida para evitar errores en home y productos
 export interface Producto {
   id: number;
   nombre: string;
+  marca: string;
   precio: number;
   imagen: string;
+  estrellas?: number;
+  resenas?: number;
+  descuento?: number;
+  nuevo?: boolean;
+  descripcion?: string;
 }
 
 export interface Compra {
@@ -55,7 +62,7 @@ export class CarritoService {
     const nuevaCompra: Compra = {
       productos: [...this.carrito],
       total: this.calcularTotal(),
-      fecha: new Date(), 
+      fecha: new Date(),
       usuario
     };
 
@@ -74,20 +81,20 @@ export class CarritoService {
       }))
     };
 
-    this.http.post('https://gftgeiygv0.execute-api.us-east-1.amazonaws.com/DEV/ventas', payload, { headers })
-      .subscribe({
-        next: (res) => console.log('Venta guardada en backend:', res),
-        error: (err) => console.error('Error al guardar venta en backend:', err)
-      });
+    this.http.post(
+      'https://gftgeiygv0.execute-api.us-east-1.amazonaws.com/DEV/ventas',
+      payload,
+      { headers }
+    ).subscribe({
+      next: (res) => console.log('Venta guardada en backend:', res),
+      error: (err) => console.error('Error al guardar venta en backend:', err)
+    });
 
     this.limpiarCarrito();
   }
 
-    cancelarCompra(): void {
+  cancelarCompra(): void {
     console.log('Compra cancelada.');
     this.limpiarCarrito();
   }
-
-
-
 }

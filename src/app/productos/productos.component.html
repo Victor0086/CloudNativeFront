@@ -1,42 +1,69 @@
-<h2 style="margin: 20px; text-align: center;">Productos en el carrito</h2>
+<div class="container my-5 bg-dark text-white p-4 rounded">
+  <h2 class="text-center mb-4">Carrito de compras</h2>
 
-<ng-container *ngIf="!boletaVisible; else boletaTemplate">
-  <div style="max-width: 500px; margin: auto; text-align: center;">
-    <ul *ngIf="carrito.length > 0; else vacio" style="list-style: none; padding: 0;">
-      <li *ngFor="let producto of carrito">
-        {{ producto.nombre }} - ${{ producto.precio | number }}
-      </li>
-    </ul>
+  <ng-container *ngIf="!boletaVisible; else boletaTemplate">
+    <div *ngIf="carrito.length > 0; else vacio">
+      <div *ngFor="let producto of carrito" class="row align-items-center mb-3 p-3 bg-secondary rounded">
+        
+        <!-- Imagen -->
+        <div class="col-12 col-md-2 mb-3 mb-md-0 text-center">
+          <img [src]="producto.imagen" alt="{{producto.nombre}}" class="img-fluid" style="max-height: 90px; object-fit: contain;">
+        </div>
+
+        <!-- Nombre y detalles -->
+        <div class="col-12 col-md-6 text-md-start text-center">
+          <h5 class="fw-bold mb-1">{{ producto.nombre }}</h5>
+          <p class="mb-0">Precio unitario: {{ producto.precio | currency:'CLP' }}</p>
+          <p class="mb-0">Cantidad: 1</p>
+        </div>
+
+        <!-- Subtotal y eliminar -->
+        <div class="col-12 col-md-4 text-md-end text-center mt-3 mt-md-0">
+          <p class="fw-bold">Subtotal: {{ producto.precio | currency:'CLP' }}</p>
+          <button class="btn btn-outline-danger btn-sm" (click)="eliminarProducto(producto)">
+            <i class="bi bi-trash"></i> Eliminar
+          </button>
+        </div>
+      </div>
+
+      <hr class="border-light">
+
+      <div class="d-flex justify-content-between fs-5 mb-4">
+        <strong>Total:</strong>
+        <strong>{{ calcularTotal() | currency:'CLP' }}</strong>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 flex-wrap">
+        <button class="btn btn-outline-light" (click)="cancelarCompra()">Cancelar compra</button>
+        <button class="btn btn-success" (click)="confirmarCompra()">Confirmar compra</button>
+      </div>
+    </div>
 
     <ng-template #vacio>
-      <p>No hay productos en el carrito.</p>
+      <p class="text-center text-muted">No hay productos en el carrito.</p>
     </ng-template>
+  </ng-container>
+</div>
 
-    <p *ngIf="carrito.length > 0"><strong>Total:</strong> ${{ calcularTotal() | number }}</p>
-
-    <div style="display: flex; justify-content: center; gap: 10px;">
-      <button mat-raised-button color="primary" (click)="confirmarCompra()">Confirmar compra</button>
-      <button mat-stroked-button color="warn" (click)="cancelarCompra()">Cancelar compra</button>
-    </div>
-  </div>
-</ng-container>
-
-<!-- BOLETA DE COMPRA -->
+<!-- Boleta -->
 <ng-template #boletaTemplate>
-  <mat-card style="max-width: 500px; margin: auto; padding: 20px;">
-    <h3>Boleta de compra</h3>
+  <div class="container my-5 bg-light p-4 rounded shadow">
+    <h3 class="text-center text-dark">Boleta de compra</h3>
     <p><strong>Número:</strong> #{{ boleta.numero }}</p>
     <p><strong>Cliente:</strong> {{ boleta.usuario }}</p>
     <p><strong>Fecha:</strong> {{ boleta.fecha | date:'medium' }}</p>
 
-    <ul>
-      <li *ngFor="let p of boleta.productos">
-        {{ p.nombre }} - ${{ p.precio | number }}
+    <ul class="list-group mb-3">
+      <li *ngFor="let p of boleta.productos" class="list-group-item d-flex justify-content-between">
+        <span>{{ p.nombre }}</span>
+        <span>{{ p.precio | currency:'CLP' }}</span>
       </li>
     </ul>
 
-    <p><strong>Total:</strong> ${{ boleta.total | number }}</p>
+    <p class="text-end fs-5"><strong>Total:</strong> {{ boleta.total | currency:'CLP' }}</p>
 
-    <button mat-raised-button color="primary" (click)="cerrarBoleta()">Aceptar</button>
-  </mat-card>
+    <div class="text-end">
+      <button class="btn btn-primary" (click)="cerrarBoleta()">Aceptar</button>
+    </div>
+  </div>
 </ng-template>

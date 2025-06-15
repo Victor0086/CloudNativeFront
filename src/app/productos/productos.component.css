@@ -1,0 +1,15 @@
+.carrito-container {
+  background-color: #1e1e1e;
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+.carrito-item {
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+}
+
+.carrito-item img {
+  background-color: white;
+  padding: 0.5rem;
+}

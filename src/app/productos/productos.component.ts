@@ -72,4 +72,11 @@ export class ProductosComponent implements OnInit {
   cerrarBoleta(): void {
     this.boletaVisible = false;
   }
+
+   eliminarProducto(producto: any): void {
+    const index = this.carrito.indexOf(producto);
+    if (index > -1) {
+      this.carrito.splice(index, 1);
+    }
+  }
 }

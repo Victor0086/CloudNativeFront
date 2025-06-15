@@ -1,56 +1,97 @@
-/* Título principal */
-h1 {
-  color: #4b0082; /* púrpura elegante */
+/* FONDO GENERAL */
+body {
+  background-color: #121212;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* Carrusel */
-#carouselPromo img {
-  max-height: 300px;
-  object-fit: cover;
-}
-
-/* Tarjeta de producto */
+/* TARJETAS DE PRODUCTO */
 .producto-card {
-  transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+  background-color: #1e1e1e;
+  color: white;
   border-radius: 12px;
   overflow: hidden;
+  transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: 100%;
 }
 
 .producto-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Imagen del producto */
+/* IMAGEN */
 .producto-card img {
-  max-height: 200px;
+  width: 100%;
+  height: 180px;
   object-fit: contain;
-  background-color: #f9f9f9;
-  border-bottom: 1px solid #eee;
+  background-color: white;
+  padding: 1rem;
+  border-bottom: 1px solid #333;
 }
 
-/* Nombre del producto */
+/* CUERPO TARJETA */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  flex-grow: 1;
+}
+
+/* TÍTULO */
 .card-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #222;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
   margin-bottom: 0.5rem;
 }
 
-/* Precio */
-.card-text {
-  font-size: 1.1rem;
-  color: #198754; /* verde Bootstrap */
+/* DESCRIPCIÓN LIGERA */
+.text-light {
+  color: #ccc !important;
 }
 
-/* Botón */
-button.btn {
-  font-weight: 600;
+/* ESTRELLAS */
+.bi-star,
+.bi-star-fill {
+  font-size: 1rem;
+  margin-right: 2px;
 }
 
-/* Badge "Nuevo" y Descuento */
+/* BOTÓN PRINCIPAL */
+.producto-card .btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.producto-card .btn:hover {
+  background-color: #0056b3;
+}
+
+/* BADGES */
 .badge {
   font-size: 0.75rem;
   padding: 0.4em 0.6em;
   border-radius: 0.5rem;
+  z-index: 2;
+}
+
+/* COMPRA AHORA */
+.compra-ahora {
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #28a745;
+}
+
+.compra-ahora i {
+  margin-right: 4px;
 }
